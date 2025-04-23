@@ -2,6 +2,7 @@ import { Router } from 'express';
 import * as taskController from '../controllers/taskController';
 import { authenticateJWT } from '../middleware/auth';
 import { requireRole } from '../middleware/rbac';
+import { createTaskLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
@@ -12,7 +13,7 @@ router.use(authenticateJWT);
 router.get('/', taskController.getTasks);
 
 // Create a new task (submitters only)
-router.post('/create', requireRole(['submitter']), taskController.createTask);
+router.post('/create', requireRole(['submitter']), createTaskLimiter, taskController.createTask);
 
 // Get task by ID
 router.get('/:id', taskController.getTaskById);
