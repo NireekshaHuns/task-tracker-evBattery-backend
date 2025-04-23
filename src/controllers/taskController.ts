@@ -4,7 +4,7 @@ import { TaskService } from '../services/TaskService';
 
 const taskService = new TaskService();
 
-export const getTasks = async (req: Request, res: Response) => {
+export const getTasks = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { status } = req.query;
     const tasks = await taskService.getTasks(
@@ -18,11 +18,12 @@ export const getTasks = async (req: Request, res: Response) => {
   }
 };
 
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (req: Request, res: Response) : Promise<void> => {
   try {
     // Only submitters can create tasks
     if (req.user.role !== 'submitter') {
-      return res.status(403).json({ message: 'Only submitters can create tasks' });
+      res.status(403).json({ message: 'Only submitters can create tasks' });
+      return;
     }
     
     const { title, description } = req.body;
@@ -42,7 +43,7 @@ export const createTask = async (req: Request, res: Response) => {
   }
 };
 
-export const getTaskById = async (req: Request, res: Response) => {
+export const getTaskById = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { id } = req.params;
     
@@ -50,15 +51,17 @@ export const getTaskById = async (req: Request, res: Response) => {
     const canAccess = await taskService.canUserAccessTask(id, req.user.id, req.user.role);
     
     if (!canAccess) {
-      return res.status(403).json({ 
+      res.status(403).json({ 
         message: 'Access denied - you do not have permission to view this task' 
       });
+      return;
     }
     
     const task = await Task.findById(id).populate('createdBy', 'name');
     
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      res.status(404).json({ message: 'Task not found' });
+      return;
     }
     
     res.json(task);
@@ -67,7 +70,7 @@ export const getTaskById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateTask = async (req: Request, res: Response) => {
+export const updateTask = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { id } = req.params;
     const { title, description, status } = req.body;
@@ -75,25 +78,29 @@ export const updateTask = async (req: Request, res: Response) => {
     const task = await Task.findById(id);
     
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      res.status(404).json({ message: 'Task not found' });
+      return;
     }
     
     // RBAC checks
     if (req.user.role === 'submitter') {
       // Submitters can only edit their own pending tasks
       if (task.createdBy.toString() !== req.user.id) {
-        return res.status(403).json({ message: 'Access denied - not your task' });
+        res.status(403).json({ message: 'Access denied - not your task' });
+        return;
       }
       
       if (task.status !== 'pending') {
-        return res.status(403).json({ message: 'Can only edit pending tasks' });
+        res.status(403).json({ message: 'Can only edit pending tasks' });
+        return;
       }
       
       // Submitters can't change status
       if (status && status !== 'pending') {
-        return res.status(403).json({ 
+        res.status(403).json({ 
           message: 'Submitters cannot change task status' 
         });
+        return;
       }
       
       // Update allowed fields
@@ -102,9 +109,10 @@ export const updateTask = async (req: Request, res: Response) => {
     } else if (req.user.role === 'approver') {
       // Approvers can change status but not content
       if (title || description) {
-        return res.status(403).json({ 
+        res.status(403).json({ 
           message: 'Approvers cannot modify task content' 
         });
+        return;
       }
       
       // Status workflow validation
@@ -114,9 +122,10 @@ export const updateTask = async (req: Request, res: Response) => {
         } else if (task.status === 'approved' && status === 'done') {
           task.status = status;
         } else {
-          return res.status(400).json({ 
+          res.status(400).json({ 
             message: 'Invalid status transition' 
           });
+          return;
         }
         
         // Record update details
@@ -131,31 +140,35 @@ export const updateTask = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteTask = async (req: Request, res: Response) => {
+export const deleteTask = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { id } = req.params;
     
     const task = await Task.findById(id);
     
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      res.status(404).json({ message: 'Task not found' });
+      return;
     }
     
     // Only submitters can delete their own pending tasks
     if (req.user.role === 'submitter') {
       if (task.createdBy.toString() !== req.user.id) {
-        return res.status(403).json({ message: 'Access denied - not your task' });
+        res.status(403).json({ message: 'Access denied - not your task' });
+        return;
       }
       
       if (task.status !== 'pending') {
-        return res.status(403).json({ 
+        res.status(403).json({ 
           message: 'Can only delete pending tasks' 
         });
+        return;
       }
     } else {
-      return res.status(403).json({ 
+      res.status(403).json({ 
         message: 'Only submitters can delete tasks' 
       });
+      return;
     }
     
     await Task.deleteOne({ _id: id });

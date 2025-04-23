@@ -2,14 +2,15 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { name, username, password, role } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ message: 'Username already exists' });
+      res.status(400).json({ message: 'Username already exists' });
+      return;
     }
 
     // Create new user
@@ -28,20 +29,22 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) :  Promise<void> => {
   try {
     const { username, password } = req.body;
 
     // Find user
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: 'Invalid user name!' });
+      return;
     }
 
     // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: 'Invalid password!' });
+      return;
     }
 
     // Generate JWT
