@@ -1,13 +1,17 @@
-import app from "./app";
+import express from "express";
+import cors from "cors";
 import { connectDB } from "./config/database";
-import { env } from "./config/env";
+import router from "./routes";
 
-const startServer = async () => {
-  await connectDB();
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-  app.listen(env.port, () => {
-    console.log(`Server running at http://localhost:${env.port}`);
-  });
-};
+app.use(cors());
+app.use(express.json());
+app.use("/api", router);
 
-startServer();
+connectDB();
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
