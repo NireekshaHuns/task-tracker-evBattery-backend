@@ -12,7 +12,7 @@ router.use(authenticateJWT);
 router.get('/', taskController.getTasks);
 
 // Create a new task (submitters only)
-router.post('/', requireRole(['submitter']), taskController.createTask);
+router.post('/create', requireRole(['submitter']), taskController.createTask);
 
 // Get task by ID
 router.get('/:id', taskController.getTaskById);
