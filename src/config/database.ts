@@ -1,15 +1,13 @@
-import mongoose from "mongoose";
-import { env } from "./env";
+import mongoose from 'mongoose';
 
-/**
- * Connects to MongoDB using MONGO_URI from environment variables.
- */
-export const connectDB = async () => {
+const connectDB = async () => {
   try {
-    await mongoose.connect(env.mongoUri);
-    console.log("MongoDB connected");
+    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/task-tracker');
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error("MongoDB connection error:", error);
+    console.error(`Error: ${error}`);
     process.exit(1);
   }
 };
+
+export default connectDB;
