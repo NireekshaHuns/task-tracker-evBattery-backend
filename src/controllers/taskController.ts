@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Task from '../models/Task';
 import { TaskService } from '../services/TaskService';
+import Log from '../models/Log';
 
 const taskService = new TaskService();
 
@@ -36,6 +37,15 @@ export const createTask = async (req: Request, res: Response) : Promise<void> =>
     });
     
     await task.save();
+
+    await Log.create({
+      taskId: task._id,
+      taskTitle: task.title,
+      userId: req.user.id,
+      userName: req.user.name,
+      toStatus: 'pending',
+      action: 'create'
+    });
     
     res.status(201).json(task);
   } catch (error) {
@@ -82,6 +92,8 @@ export const updateTask = async (req: Request, res: Response) : Promise<void> =>
       return;
     }
     
+    const originalStatus = task.status;
+
     // RBAC checks
     if (req.user.role === 'submitter') {
       // Submitters can only edit their own pending tasks
@@ -133,6 +145,28 @@ export const updateTask = async (req: Request, res: Response) : Promise<void> =>
       }
     }
     
+    if (status && status !== originalStatus) {
+      await Log.create({
+        taskId: task._id,
+        taskTitle: task.title,
+        userId: req.user.id,
+        userName: req.user.name,
+        fromStatus: originalStatus,
+        toStatus: status,
+        action: 'status_change'
+      });
+    } else if (title || description !== undefined) {
+      // Log content update
+      await Log.create({
+        taskId: task._id,
+        taskTitle: task.title,
+        userId: req.user.id,
+        userName: req.user.name,
+        toStatus: task.status,
+        action: 'update'
+      });
+    }
+
     await task.save();
     res.json(task);
   } catch (error) {
@@ -170,6 +204,16 @@ export const deleteTask = async (req: Request, res: Response) : Promise<void> =>
       });
       return;
     }
+    
+    await Log.create({
+      taskId: task._id,
+      taskTitle: task.title,
+      userId: req.user.id,
+      userName: req.user.name,
+      fromStatus: task.status,
+      toStatus: 'deleted',
+      action: 'delete'
+    });
     
     await Task.deleteOne({ _id: id });
     res.json({ message: 'Task deleted successfully' });
