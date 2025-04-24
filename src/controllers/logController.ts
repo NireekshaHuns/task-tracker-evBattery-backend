@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Log from '../models/Log';
+import User from '../models/User';
 
 export const getLogs = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -9,7 +10,7 @@ export const getLogs = async (req: Request, res: Response): Promise<void> => {
       action, 
       fromStatus, 
       toStatus,
-
+      submitterId,
       startDate,
       endDate,
       limit = 100,
@@ -18,8 +19,13 @@ export const getLogs = async (req: Request, res: Response): Promise<void> => {
     
     const query: any = {};
     
+    if (req.user.role === 'submitter') {
+      query.userId = req.user.id;
+    } else if (req.user.role === 'approver' && submitterId) {
+      query.userId = submitterId;
+    }
+    
     if (taskId) query.taskId = taskId;
-    if (userId) query.userId = userId;
     if (action) query.action = action;
     if (fromStatus) query.fromStatus = fromStatus;
     if (toStatus) query.toStatus = toStatus;
@@ -53,6 +59,26 @@ export const getLogs = async (req: Request, res: Response): Promise<void> => {
       }
     });
   } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+export const getSubmitters = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Only approvers can access this endpoint
+    if (req.user.role !== 'approver') {
+      res.status(403).json({ message: 'Access denied - approvers only' });
+      return;
+    }
+    
+    // Get all users with submitter role
+    const submitters = await User.find({ role: 'submitter' })
+      .select('_id name')
+      .sort('name');
+    
+    res.json(submitters);
+  } catch (error) {
+    console.error('Error fetching submitters:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };

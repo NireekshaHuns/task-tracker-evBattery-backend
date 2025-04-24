@@ -10,5 +10,6 @@ router.use(authenticateJWT);
 
 // Get logs with filtering
 router.get('/', logController.getLogs);
+router.get('/submitters', logController.getSubmitters);
 
 export default router;
