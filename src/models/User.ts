@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import { User as JsonUser, IUser } from "../database/jsonDB";
 
 class User {
