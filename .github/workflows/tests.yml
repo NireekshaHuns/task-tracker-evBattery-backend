@@ -1,8 +1,7 @@
-name: Manual Test Runner
+name: Task Tracker Automation Tests
 
 on:
   workflow_dispatch:
-    # Optional inputs you might want to provide when triggering the workflow
     inputs:
       test_suite:
         description: "Which test suite to run"
@@ -13,7 +12,6 @@ on:
           - all
           - auth
           - tasks
-          - notifications
 
 jobs:
   test:
@@ -35,6 +33,3 @@ jobs:
       - name: Run task tests
         if: ${{ github.event.inputs.test_suite == 'tasks' }}
         run: npm run test:tasks
-      - name: Run notification tests
-        if: ${{ github.event.inputs.test_suite == 'notifications' }}
-        run: npm run test:notifications
