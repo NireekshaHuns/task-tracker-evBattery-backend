@@ -4,6 +4,9 @@ node_modules/
 # Build
 dist/
 
+data/*
+!data/.gitkeep
+
 # Environment variables
 .env
 
