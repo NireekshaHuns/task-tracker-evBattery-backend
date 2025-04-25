@@ -36,13 +36,13 @@ class Log {
   }
 
   static async create(logData: Omit<ILog, "_id">): Promise<Log> {
-    // Ensure timestamp is a proper Date object
-    const logDataWithDate = {
+    // Ensure timestamp is set if not provided
+    const logDataWithTimestamp = {
       ...logData,
       timestamp: logData.timestamp || new Date(),
     };
 
-    const newLog = await JsonLog.create(logDataWithDate);
+    const newLog = await JsonLog.create(logDataWithTimestamp);
 
     // Ensure the returned log has a proper Date object for timestamp
     const logObj = Object.assign(Object.create(Log.prototype), newLog);
