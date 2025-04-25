@@ -1,10 +1,19 @@
-name: Node.js Tests
+name: Manual Test Runner
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  workflow_dispatch:
+    # Optional inputs you might want to provide when triggering the workflow
+    inputs:
+      test_suite:
+        description: "Which test suite to run"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - auth
+          - tasks
+          - notifications
 
 jobs:
   test:
@@ -17,4 +26,15 @@ jobs:
         with:
           node-version: "16.x"
       - run: npm i
-      - run: npm run test:isolated
+      - name: Run all tests
+        if: ${{ github.event.inputs.test_suite == 'all' }}
+        run: npm run test:isolated
+      - name: Run auth tests
+        if: ${{ github.event.inputs.test_suite == 'auth' }}
+        run: npm run test:auth
+      - name: Run task tests
+        if: ${{ github.event.inputs.test_suite == 'tasks' }}
+        run: npm run test:tasks
+      - name: Run notification tests
+        if: ${{ github.event.inputs.test_suite == 'notifications' }}
+        run: npm run test:notifications
