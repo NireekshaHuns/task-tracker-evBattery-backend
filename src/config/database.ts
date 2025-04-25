@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import jsonDb from "../database/jsonDB";
 
-const connectDB = async () => {
+const connectDB = async (): Promise<void> => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/task-tracker');
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    jsonDb.initializeDb();
+    console.log("JSON Database Initialized");
   } catch (error) {
     console.error(`Error: ${error}`);
     process.exit(1);
