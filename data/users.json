@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "81646eb0-b83a-4826-af47-e52ac1000948",
+    "name": "darshan",
+    "role": "submitter",
+    "username": "darshansubmitter",
+    "password": "$2b$10$R1yGHwyaBvMiklNXVmZTOO94xkXdW379PhUf/rRblRmRHWgfpa0u.",
+    "createdAt": "2025-04-25T01:30:33.651Z",
+    "updatedAt": "2025-04-25T01:30:33.651Z"
+  },
+  {
+    "_id": "c60c679f-3100-4113-a70a-a2281b3466d6",
+    "name": "darshanaswath",
+    "role": "approver",
+    "username": "darshanapprover",
+    "password": "$2b$10$AGu4A.0nOpb92rltqhftnuOl2lfT2YR0nGsl9IZqq4qrNLNf2XGZ2",
+    "createdAt": "2025-04-25T01:31:49.674Z",
+    "updatedAt": "2025-04-25T01:31:49.674Z"
+  },
+  {
+    "_id": "6840c132-7004-4b29-92ee-83314bd24ae5",
+    "name": "nireeksha",
+    "role": "approver",
+    "username": "nireeksha",
+    "password": "$2b$10$ata.9VkIEKOt2.FBe2Zcb.gCCx7qjuaKwSTlPibmGtOXq/3rzvx.e",
+    "createdAt": "2025-04-25T01:48:02.631Z",
+    "updatedAt": "2025-04-25T01:48:02.631Z"
+  }
+]
