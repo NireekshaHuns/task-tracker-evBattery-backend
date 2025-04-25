@@ -6,14 +6,12 @@ export const register = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { name, username, password, role } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       res.status(400).json({ message: 'Username already exists' });
       return;
     }
 
-    // Create new user
     const user = new User({
       name,
       username,
@@ -29,25 +27,29 @@ export const register = async (req: Request, res: Response) : Promise<void> => {
   }
 };
 
-export const login = async (req: Request, res: Response) :  Promise<void> => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, password } = req.body;
+    const { username, password, role } = req.body;
 
-    // Find user
     const user = await User.findOne({ username });
     if (!user) {
-      res.status(401).json({ message: 'Invalid user name!' });
+      res.status(401).json({ message: 'Invalid credentials' });
       return;
     }
 
-    // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      res.status(401).json({ message: 'Invalid password!' });
+      res.status(401).json({ message: 'Invalid credentials' });
       return;
     }
 
-    // Generate JWT
+    if (user.role !== role) {
+      res.status(403).json({ 
+        message: `You don't have access as ${role}. Your account is registered as a ${user.role}.` 
+      });
+      return;
+    }
+
     const token = jwt.sign(
       { id: user._id, role: user.role, name: user.name },
       process.env.JWT_SECRET || 'default_jwt_secret',
