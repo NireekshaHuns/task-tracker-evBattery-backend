@@ -9,6 +9,7 @@ const DB_DIR = path.join(__dirname, "../../data");
 const USERS_FILE = path.join(DB_DIR, "users.json");
 const TASKS_FILE = path.join(DB_DIR, "tasks.json");
 const LOGS_FILE = path.join(DB_DIR, "logs.json");
+const NOTIFICATIONS_FILE = path.join(DB_DIR, "notifications.json");
 
 // Ensure data directory exists
 if (!fs.existsSync(DB_DIR)) {
@@ -25,6 +26,9 @@ const initializeDb = () => {
   }
   if (!fs.existsSync(LOGS_FILE)) {
     fs.writeFileSync(LOGS_FILE, JSON.stringify([]));
+  }
+  if (!fs.existsSync(NOTIFICATIONS_FILE)) {
+    fs.writeFileSync(NOTIFICATIONS_FILE, JSON.stringify([]));
   }
 };
 
@@ -348,9 +352,80 @@ export const Log = {
 // Initialize the database
 initializeDb();
 
+export interface INotification {
+  _id: string;
+  userId: string;
+  taskId: string;
+  taskTitle: string;
+  message: string;
+  createdAt: Date;
+  actionType: "task_approved" | "task_rejected" | "task_done";
+  actorName: string;
+}
+
+// Notification operations
+export const Notification = {
+  find: async (
+    query: Partial<INotification> = {}
+  ): Promise<INotification[]> => {
+    const notifications = readData<INotification>(NOTIFICATIONS_FILE);
+    return notifications.filter((notification) => {
+      for (const [key, value] of Object.entries(query)) {
+        if (notification[key as keyof INotification] !== value) {
+          return false;
+        }
+      }
+      return true;
+    });
+  },
+
+  create: async (
+    notificationData: Omit<INotification, "_id">
+  ): Promise<INotification> => {
+    const notifications = readData<INotification>(NOTIFICATIONS_FILE);
+    const newNotification: INotification = {
+      _id: uuidv4(),
+      ...notificationData,
+      createdAt: notificationData.createdAt || new Date(),
+    };
+    notifications.push(newNotification);
+    writeData(NOTIFICATIONS_FILE, notifications);
+    return newNotification;
+  },
+
+  save: async (notification: INotification): Promise<INotification> => {
+    const notifications = readData<INotification>(NOTIFICATIONS_FILE);
+    const index = notifications.findIndex((n) => n._id === notification._id);
+    if (index === -1) {
+      throw new Error(`Notification with id ${notification._id} not found`);
+    }
+    notifications[index] = notification;
+    writeData(NOTIFICATIONS_FILE, notifications);
+    return notification;
+  },
+
+  deleteMany: async (query: Partial<INotification>): Promise<number> => {
+    const notifications = readData<INotification>(NOTIFICATIONS_FILE);
+    const originalLength = notifications.length;
+
+    const filteredNotifications = notifications.filter((notification) => {
+      for (const [key, value] of Object.entries(query)) {
+        if (notification[key as keyof INotification] === value) {
+          return false; // Exclude this notification (it matches the delete query)
+        }
+      }
+      return true; // Keep this notification
+    });
+
+    writeData(NOTIFICATIONS_FILE, filteredNotifications);
+    return originalLength - filteredNotifications.length; // Return count of deleted notifications
+  },
+};
+
 export default {
   User,
   Task,
   Log,
+  Notification,
   initializeDb,
 };
