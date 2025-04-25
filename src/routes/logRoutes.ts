@@ -1,4 +1,3 @@
-// routes/logRoutes.ts
 import { Router } from 'express';
 import * as logController from '../controllers/logController';
 import { authenticateJWT } from '../middleware/auth';
