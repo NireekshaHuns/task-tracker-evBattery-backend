@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "start": "ts-node src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watchAll --runInBand",
+    "test:clean": "rm -rf data_test && mkdir -p data_test && jest --runInBand",
+    "test:auth": "jest tests/auth.test.ts --runInBand",
+    "test:tasks": "jest tests/tasks.test.ts --runInBand",
+    "test:isolated": "npm run test:auth && npm run test:tasks"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +21,14 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.14.1",
+    "@types/supertest": "^6.0.3",
+    "jest": "^29.7.0",
+    "supertest": "^7.1.0",
+    "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
