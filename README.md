@@ -15,7 +15,7 @@ This is the backend API for the Task Manager application, providing a complete t
 
 For containerized deployment with both frontend and backend, see our [task-tracker-orchestration](https://github.com/NireekshaHuns/EVident-Battery-Orchestration-Service) repository which contains the Docker Compose configuration.
 
-### Installation
+### Local Installation
 
 ```bash
 # 1. Install dependencies
