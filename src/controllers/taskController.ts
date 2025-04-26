@@ -15,7 +15,11 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
       req.user.role,
       status as string | undefined
     );
-    res.json(tasks);
+
+    // Populate user references before sending response
+    const populatedTasks = await Task.populateUserReferences(tasks);
+
+    res.json(populatedTasks);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -88,6 +92,11 @@ export const getTaskById = async (
 
     // Populate createdBy field
     await task.populate("createdBy", "name");
+
+    // Populate updatedBy field if it exists
+    if (task.updatedBy) {
+      await task.populate("updatedBy", "name");
+    }
 
     res.json(task);
   } catch (error) {

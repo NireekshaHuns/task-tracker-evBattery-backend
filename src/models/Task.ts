@@ -68,6 +68,24 @@ class Task {
     Object.assign(this, populatedTask);
     return this;
   }
+
+  static async populateUserReferences(tasks: Task[]): Promise<Task[]> {
+    const populatedTasks = [];
+
+    for (const task of tasks) {
+      // Populate createdBy
+      await task.populate("createdBy", "name role");
+
+      // Populate updatedBy if it exists
+      if (task.updatedBy) {
+        await task.populate("updatedBy", "name role");
+      }
+
+      populatedTasks.push(task);
+    }
+
+    return populatedTasks;
+  }
 }
 
 export default Task;
