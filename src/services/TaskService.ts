@@ -20,7 +20,7 @@ export class TaskService {
       // Manually populate createdBy and updatedBy since we don't have MongoDB's populate
       const populatedTasks = [];
       for (const task of tasks) {
-        await task.populate("createdBy", "name");
+        await task.populate("createdBy", "_id name");
         if (task.updatedBy) {
           await task.populate("updatedBy", "name");
         }
