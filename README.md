@@ -1,3 +1,5 @@
+[![Backend Tests](https://github.com/NireekshaHuns/task-tracker-evBattery-backend/actions/workflows/tests.yml/badge.svg)](https://github.com/NireekshaHuns/task-tracker-evBattery-backend/actions/workflows/tests.yml)
+
 # Task Manager Backend API
 
 ## Overview
@@ -38,6 +40,18 @@ JWT_SECRET=your_jwt_secret_here
 JWT_EXPIRES_IN=1d
 DATA_PATH=./data
 ```
+
+## CI/CD Pipeline
+
+This project implements Continuous Integration and Continuous Deployment (CI/CD) using GitHub Actions. The CI/CD pipeline can be manually triggered to run tests.
+
+### Backend Testing Workflow
+
+Our GitHub Actions workflow is configured to:
+
+- Set up the appropriate runtime environment
+- Install dependencies
+- Execute the test suite against the backend code
 
 ## API Documentation
 
