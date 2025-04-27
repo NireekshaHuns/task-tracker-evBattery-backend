@@ -4,6 +4,62 @@ import User from "../models/User";
 import { validatePassword } from "../utils/passwordValidation";
 
 // Register a new user
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - username
+ *               - password
+ *               - role
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User's full name
+ *               username:
+ *                 type: string
+ *                 description: Unique username
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: User's password (must meet security requirements)
+ *               role:
+ *                 type: string
+ *                 enum: [submitter, approver]
+ *                 description: User's role in the system
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully
+ *       400:
+ *         description: Invalid input or username already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, username, password, role } = req.body;
@@ -39,6 +95,81 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Log in an existing user
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Log in an existing user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - role
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: User's username
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: User's password
+ *               role:
+ *                 type: string
+ *                 enum: [submitter, approver]
+ *                 description: User's role
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *                       enum: [submitter, approver]
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ *       403:
+ *         description: Role mismatch
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, password, role } = req.body;
