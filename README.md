@@ -39,6 +39,27 @@ JWT_EXPIRES_IN=1d
 DATA_PATH=./data
 ```
 
+## API Documentation
+
+The API is fully documented using OpenAPI/Swagger. After starting the application, you can access the interactive API documentation at:
+
+http://localhost:5000/api-docs
+
+The documentation provides:
+
+- Complete endpoint listing with descriptions
+- Request parameters and body schemas
+- Response formats and status codes
+- Authentication requirements
+- Interactive testing interface
+
+You can use this interface to:
+
+- Explore available endpoints
+- Test API calls directly from your browser
+- Understand the expected request/response format for each endpoint
+- See the data models used by the API
+
 ## Features
 
 - **Authentication**: JWT-based authentication system
@@ -59,6 +80,7 @@ DATA_PATH=./data
 - **JWT**: JSON Web Tokens for authentication
 - **bcrypt**: Password hashing for security
 - **uuid**: For generating unique identifiers
+- **OpenAPI**: API documentation
 
 ## API Endpoints
 
