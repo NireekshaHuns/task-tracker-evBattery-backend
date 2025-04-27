@@ -13,7 +13,6 @@ export const getNotifications = async (
     const result = await fetchNotifications(req.query, req.user.id);
     res.json(result);
   } catch (error) {
-    console.error("Error fetching notifications:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
@@ -27,7 +26,6 @@ export const clearAllNotifications = async (
     const result = await clearNotifications(req.user.id);
     res.json(result);
   } catch (error) {
-    console.error("Error clearing notifications:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };

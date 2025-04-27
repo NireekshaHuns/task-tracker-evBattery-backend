@@ -26,7 +26,6 @@ export const getSubmitters = async (
 
     res.json(submitters);
   } catch (error) {
-    console.error("Error fetching submitters:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
