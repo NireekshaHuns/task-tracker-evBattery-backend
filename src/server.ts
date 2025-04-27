@@ -24,7 +24,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/logs", logRoutes);
 app.use("/api/notifications", notificationRoutes);
-// Error Handler (should be last)
 app.use(errorHandler);
 
 // Start Server

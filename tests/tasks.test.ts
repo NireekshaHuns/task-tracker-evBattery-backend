@@ -8,7 +8,6 @@ import path from "path";
 
 // Helper to verify database is empty at start of test
 const ensureEmptyDatabase = async () => {
-  // Simply check that the database has correct path and is empty
   const dbDir = process.env.DATA_PATH || path.join(__dirname, "../data_test");
   const tasksFile = path.join(dbDir, "tasks.json");
 
@@ -19,7 +18,6 @@ const ensureEmptyDatabase = async () => {
       console.warn(
         `WARNING: Tasks database not empty at start of test. Found ${tasks.length} tasks.`
       );
-      // Force empty
       fs.writeFileSync(tasksFile, JSON.stringify([]));
     }
   }
@@ -30,7 +28,6 @@ describe("Tasks API Tests", () => {
   let approverData: { user: any; token: string };
   let anotherSubmitterData: { user: any; token: string };
 
-  // Before each test, ensure we start with an empty database and create required users
   beforeEach(async () => {
     // Start with empty database
     await ensureEmptyDatabase();
@@ -168,7 +165,7 @@ describe("Tasks API Tests", () => {
         .set("Authorization", `Bearer ${approverData.token}`)
         .send({ status: "approved" });
 
-      // Now, try to edit the approved task as a submitter
+      // try to edit the approved task as a submitter
       const response = await request(app)
         .put(`/api/tasks/${pendingTask._id}`)
         .set("Authorization", `Bearer ${submitterData.token}`)
@@ -179,7 +176,6 @@ describe("Tasks API Tests", () => {
     });
 
     it("should prevent submitters from accessing tasks created by others", async () => {
-      // Ensure database is empty first
       await ensureEmptyDatabase();
 
       // Create a task by another submitter
@@ -218,7 +214,6 @@ describe("Tasks API Tests", () => {
 
   describe("Task Deletion", () => {
     it("should allow submitters to delete their pending tasks", async () => {
-      // Ensure database is empty first
       await ensureEmptyDatabase();
 
       const task = await createTestTask(submitterData.user._id);
@@ -232,7 +227,6 @@ describe("Tasks API Tests", () => {
     });
 
     it("should prevent submitters from deleting approved tasks", async () => {
-      // Ensure database is empty first
       await ensureEmptyDatabase();
 
       const task = await createTestTask(submitterData.user._id, "approved");
@@ -246,7 +240,6 @@ describe("Tasks API Tests", () => {
     });
 
     it("should prevent approvers from deleting tasks", async () => {
-      // Ensure database is empty first
       await ensureEmptyDatabase();
 
       const task = await createTestTask(submitterData.user._id);

@@ -47,9 +47,8 @@ beforeAll(() => {
 
 // Reset database state before EACH test
 beforeEach(() => {
-  jest.resetModules(); // Reset module cache
+  jest.resetModules();
 
-  // This is critical - reset all database files before each test
   const dataFiles = [
     "users.json",
     "tasks.json",
@@ -58,7 +57,6 @@ beforeEach(() => {
   ];
   dataFiles.forEach((file) => {
     const filePath = path.join(TEST_DB_DIR, file);
-    // Ensure file exists
     if (fs.existsSync(filePath)) {
       fs.writeFileSync(filePath, JSON.stringify([]));
     } else {

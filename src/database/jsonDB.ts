@@ -1,4 +1,3 @@
-// src/database/jsonDb.ts
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -35,16 +34,12 @@ const initializeDb = () => {
 // Helper function to convert date strings to Date objects when reading
 const convertDates = (obj: any): any => {
   if (!obj) return obj;
-
-  // If it's an array, convert each element
   if (Array.isArray(obj)) {
     return obj.map((item) => convertDates(item));
   }
 
-  // If it's an object, convert each property
   if (typeof obj === "object") {
     Object.keys(obj).forEach((key) => {
-      // Check if the property is a date string
       if (
         typeof obj[key] === "string" &&
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(obj[key])
@@ -279,7 +274,6 @@ export const Log = {
 
     return logs.filter((log) => {
       for (const [key, value] of Object.entries(query)) {
-        // Handle timestamp range queries
         if (key === "timestamp" && typeof value === "object") {
           const timestampQuery = value as { $gte?: Date; $lte?: Date };
           const logTimestamp = new Date(log.timestamp);
@@ -297,9 +291,7 @@ export const Log = {
           ) {
             return false;
           }
-        }
-        // Handle other fields
-        else if (log[key as keyof ILog] !== value) {
+        } else if (log[key as keyof ILog] !== value) {
           return false;
         }
       }
@@ -411,14 +403,14 @@ export const Notification = {
     const filteredNotifications = notifications.filter((notification) => {
       for (const [key, value] of Object.entries(query)) {
         if (notification[key as keyof INotification] === value) {
-          return false; // Exclude this notification (it matches the delete query)
+          return false;
         }
       }
-      return true; // Keep this notification
+      return true;
     });
 
     writeData(NOTIFICATIONS_FILE, filteredNotifications);
-    return originalLength - filteredNotifications.length; // Return count of deleted notifications
+    return originalLength - filteredNotifications.length;
   },
 };
 

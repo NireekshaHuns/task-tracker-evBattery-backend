@@ -19,6 +19,7 @@ class User {
     this.updatedAt = new Date();
   }
 
+  // Find a single user matching query
   static async findOne(query: Partial<IUser>): Promise<User | null> {
     const user = await JsonUser.findOne(query);
     if (!user) return null;
@@ -26,6 +27,7 @@ class User {
     return Object.assign(Object.create(User.prototype), user);
   }
 
+  // Find multiple users matching query
   static async find(query: Partial<IUser>): Promise<User[]> {
     const users = await JsonUser.find(query);
     return users.map((user) =>

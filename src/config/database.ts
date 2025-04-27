@@ -1,5 +1,6 @@
 import jsonDb from "../database/jsonDB";
 
+// Initialize the local JSON database
 const connectDB = async (): Promise<void> => {
   try {
     jsonDb.initializeDb();

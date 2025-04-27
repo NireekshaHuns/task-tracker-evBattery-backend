@@ -10,6 +10,7 @@ declare global {
   }
 }
 
+// Authenticate user based on JWT
 export const authenticateJWT = (
   req: Request,
   res: Response,
