@@ -4,6 +4,7 @@ import {
   clearNotifications,
 } from "../services/NotificationService";
 
+// Get notifications for a user
 export const getNotifications = async (
   req: Request,
   res: Response
@@ -17,6 +18,7 @@ export const getNotifications = async (
   }
 };
 
+// Clear all notifications for a user
 export const clearAllNotifications = async (
   req: Request,
   res: Response

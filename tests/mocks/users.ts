@@ -1,3 +1,4 @@
+// Mock user data for testing
 export const mockUsers = {
   submitter: {
     name: "Test Submitter",

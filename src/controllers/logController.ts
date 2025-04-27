@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { fetchLogs, fetchSubmitters } from "../services/LogService";
 
+// Get all logs based on query parameters
 export const getLogs = async (req: Request, res: Response): Promise<void> => {
   try {
     const result = await fetchLogs(req.query, req.user);
@@ -10,6 +11,7 @@ export const getLogs = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// Get list of submitters (approvers only)
 export const getSubmitters = async (
   req: Request,
   res: Response

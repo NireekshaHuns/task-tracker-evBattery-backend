@@ -5,13 +5,13 @@ import {
 
 class Notification {
   _id: string;
-  userId: string; // The user who will receive the notification
+  userId: string;
   taskId: string;
   taskTitle: string;
   message: string;
   createdAt: Date;
   actionType: "task_approved" | "task_rejected" | "task_done";
-  actorName: string; // The name of the user who performed the action
+  actorName: string;
 
   constructor(notificationData: Omit<INotification, "_id" | "createdAt">) {
     this._id = "";
